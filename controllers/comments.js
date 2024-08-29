@@ -39,6 +39,7 @@ exports.getCommentsByAId = (req, res, next) => {
 
     insertComment(req)
       .then((comment) => {
+        console.log(comment.code)
         if (comment.code) {
           return Promise.reject({ status: 400, msg: "Bad request" });
         }
@@ -56,6 +57,7 @@ exports.getCommentsByAId = (req, res, next) => {
 
     deleteCommentById(req)
       .then((comment) => {
+        console.log(comment.code)
         if (comment.code) {
           return Promise.reject({ status: 400, msg: "Bad request" });
         }

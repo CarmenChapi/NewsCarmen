@@ -1,7 +1,6 @@
 const { selectAllArticles, selectArticleById, updateArticleById } = require("../models/articles");
 
 exports.getAllArticles = (req, res, next) => {
-
   selectAllArticles(req)
     .then((articles) => {
       res.status(200).send({ articles });
