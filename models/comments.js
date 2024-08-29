@@ -61,11 +61,12 @@ const deleteCommentById = (req) => {
     if(comment.rows.length === 0 ){
       return Promise.reject({status: 404, msg: "Not found"})
     }
-    return comment.rows[0]})
-  .then(comments => {
-      return comments.rows[0];
+    return comment.rows[0]
   })
-
+    .catch(err => {
+      console.log(err)
+      return err;
+    })
 
 }
 
