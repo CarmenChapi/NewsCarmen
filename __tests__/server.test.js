@@ -8,7 +8,7 @@ beforeAll(() => seed(data));
 afterAll(() => db.end());
 
 
-describe("Project test suite", () => {
+describe("Project Test Suite", () => {
 describe("Test topics", () => {
     test("200 get all topics", () => {
         return request(app)
@@ -30,7 +30,6 @@ describe("Test topics", () => {
       .get("/api")
       .expect(200)
       .then((data) => {
-        console.log(data.body.endpoints)
         expect(Array.isArray(data.body.endpoints)).toBe(true);
        expect(data.body.endpoints[0]).toEqual( {
         description: 'serves up a json representation of all the available endpoints of the api'
@@ -65,7 +64,6 @@ const articleToPost = {"/api/articles/:article_id": {
       .expect(201)
       .then((response) => {
         const { body } = response;
-        console.log(body.endpoint)
         expect(body.endpoint).toEqual(articleToPost);
       });
   });
@@ -109,7 +107,6 @@ describe("Test articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((data) => {
-        console.log(data.body.articles)
         expect(Array.isArray(data.body.articles)).toBe(true);
         expect(data.body.articles.length).toBe(13);
         expect(data.body.articles).toBeSortedBy('created_at', {descending: true});
@@ -237,14 +234,115 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
   });
 });
 
+test("200: GET /api/articles?topic= [mitch, paper, cats] return all articles filtered by topic slug", () => {
+  return request(app)
+  .get("/api/articles?topic=mitch")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(12);
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article.topic).toBe("mitch");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+test("200: GET /api/articles?topic= [mitch, paper, cat] return all articles when ommited o not in the valid range", () => {
+  return request(app)
+  .get("/api/articles?topic=maria")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(13);
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+test("404: GET /api/articles?topic= valid but not existing value return msg error not found", () => {
+  return request(app)
+  .get("/api/articles?topic=paper")
+  .expect(404)
+  .then((data) => {
+    expect(data.body.msg).toBe("Not found");
+    });
+  });
+
+  test("200: GET /api/articles/:article_id (comment_count) ", () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then((data) => {
+      
+      expect(data.body.article).toHaveProperty("author");
+      expect(data.body.article).toHaveProperty("title");
+      expect(data.body.article).toHaveProperty("article_id");
+      expect(data.body.article.article_id).toBe(1);
+      expect(data.body.article).toHaveProperty("body");
+      expect(data.body.article).toHaveProperty("topic");
+      expect(data.body.article).toHaveProperty("created_at");
+      expect(data.body.article).toHaveProperty("votes");
+      expect(data.body.article).toHaveProperty("article_img_url");
+      expect(data.body.article).toHaveProperty("comment_count");
+      expect(data.body.article.comment_count).toBe("11");
+    });
+    });
+
+    test("404: GET /api/articles/:article_id (comment_count)  return msg error when id not existig but in the range", () => {
+      return request(app)
+      .get("/api/articles/111")
+      .expect(404)
+      .then((data) => {
+        expect(data.body.msg).toBe("Not found");
+        });
+      });
+
+      test("400: GET /api/articles/:article_id (comment_count)  return msg error when id not existig but in the range", () => {
+        return request(app)
+        .get("/api/articles/invalidValue")
+        .expect(400)
+        .then((data) => {
+          expect(data.body.msg).toBe("Bad request");
+          });
+        });
+      
+
 
   test("200: GET /api/articles/:article_id article by id provided in the url", () => {
     return request(app)
     .get("/api/articles/1")
     .expect(200)
     .then((data) => {
-      const artToCompare = {"article_id": 1, "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700", "author": "butter_bridge", "body": "I find this existence challenging", "created_at": "2020-07-09T20:11:00.000Z", "title": "Living in the shadow of a great man", "topic": "mitch", "votes": 100}
-        expect(data.body.article).toEqual(artToCompare);
+      const articleToCompare =     {
+        article_id: 1,
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        created_at: '2020-07-09T20:11:00.000Z',
+        votes: 100,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        body: 'I find this existence challenging',
+        comment_count: '11'
+      }
+      expect(data.body.article).toEqual(articleToCompare);
 
       });
     });
@@ -339,7 +437,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .get("/api/articles/455/comments")
       .expect(404)
       .then((data) => {
-        console.log(data.body)
+   
         expect(data.body.msg).toBe("Not found");
       })
   });
@@ -358,7 +456,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .get("/api/comments")
       .expect(200)
       .then((data) => {
-        console.log(data.body.comments)
+  
         expect(Array.isArray(data.body.comments)).toBe(true);
         expect(data.body.comments.length).toBe(18);
         data.body.comments.forEach((comment) => {
@@ -382,7 +480,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .expect(201)
       .then((response) => {
         const { body } = response;
-        console.log(body.comment)
+      
         expect(body.comment).toHaveProperty("comment_id");
         expect(body.comment).toHaveProperty("votes");
         expect(body.comment).toHaveProperty("created_at");
@@ -405,7 +503,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .expect(400)
       .then((response) => {
         const { body } = response;
-        console.log(body.msg)
+  
         expect(body.msg).toBe("Bad request");
       });
   });
@@ -420,7 +518,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .expect(400)
       .then((response) => {
         const { body } = response;
-        console.log(body.msg)
+   
         expect(body.msg).toBe("Bad request");
       });
   });
@@ -438,7 +536,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .expect(404)
       .then((response) => {
         const { body } = response;
-        console.log(body.msg)
+   
         expect(body.msg).toBe("Not found");
       });
      
@@ -451,7 +549,7 @@ test("200: GET /api/articles?order=asc o desc return all articles ordered asd or
       .expect(400)
       .then((response) => {
         const { body } = response;
-        console.log(body.msg)
+
         expect(body.msg).toBe("Bad request");
       });
      

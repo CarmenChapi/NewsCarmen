@@ -4,6 +4,12 @@ exports.getAllArticles = (req, res, next) => {
 
   selectAllArticles(req)
     .then((articles) => {
+      if (articles.code) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+      }
+      if (articles.status === 404) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
       res.status(200).send({ articles });
     })
 
@@ -14,12 +20,10 @@ exports.getAllArticles = (req, res, next) => {
 };
 
 exports.getArticlesById = (req, res, next) => {
-  console.log(req.params);
+
   const { article_id } = req.params;
-  console.log(article_id);
   selectArticleById(article_id)
     .then((article) => {
-      console.log(article);
       if (article.code === "22P02") {
         return Promise.reject({ status: 400, msg: "Bad request" });
       }

@@ -14,7 +14,6 @@ if(ENV === "production"){
   pgConfig.connectionString = process.env.DATABASE_URL
   pgConfig.max = 2
 }
-console.log(pgConfig)
 const { Pool } = pg;
 
 module.exports = new Pool(pgConfig);

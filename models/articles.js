@@ -2,7 +2,7 @@
 const db = require("../db/connection.js");
 const validOrderValues = ["ASC", "asc", "DESC", "desc"]
 const validSortByValues = ["author", "title","votes", "article_id", "body","topic","created_at","article_img_url"]
-
+const validTopicValues = ["mitch","cats","paper"]
 
 const {querySelectArticles, querySelectArticlesById,
   queryUpdateArticlesByIdSum, queryUpdateArticlesByIdNeg
@@ -11,15 +11,21 @@ const {querySelectArticles, querySelectArticlesById,
 
 const selectAllArticles = (req) => {
 
-  const {sort_by, order} = req.query
-  console.log(sort_by, order)
+  const {sort_by, order, topic} = req.query
+
   let query = querySelectArticles
 
+  if(validTopicValues.includes(topic)){
+    query += ` WHERE articles.topic like '${topic}' `;
+  }
+
   if(validSortByValues.includes(sort_by)){
-    query += `ORDER BY articles.${sort_by} `;
+    query += ` GROUP BY articles.article_id 
+    ORDER BY articles.${sort_by} `;
   }
   else{
-    query += `ORDER BY articles.created_at `;
+    query += ` GROUP BY articles.article_id 
+    ORDER BY articles.created_at `;
   }
   
   if(validOrderValues.includes(order)){
@@ -29,12 +35,8 @@ const selectAllArticles = (req) => {
     query += ` DESC ;`
   }
   
-
-
-console.log(query)
     return db.query(query)
       .then(articles => {
-
         if(articles.rows.length === 0 ){
           return Promise.reject({status: 404, msg: "Not found"})
         }
