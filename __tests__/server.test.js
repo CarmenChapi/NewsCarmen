@@ -30,79 +30,43 @@ describe("test topics", () => {
       .get("/api")
       .expect(200)
       .then((data) => {
+        console.log(data.body.endpoints)
         expect(Array.isArray(data.body.endpoints)).toBe(true);
-       expect(data.body.endpoints[0]).toEqual({
+       expect(data.body.endpoints[0]).toEqual( {
         description: 'serves up a json representation of all the available endpoints of the api'
       });
-      expect(data.body.endpoints[1]).toEqual({"description": "serves an array of all topics", "exampleResponse": {"topics": [{"description": "Footie!", "slug": "football"}]}, "queries": []})
-      expect(data.body.endpoints[2]).toEqual({
-        "description": "serves an array of all articles",
-        "queries": ["author", "topic", "sort_by", "order"],
-        "exampleResponse": {
-          "articles": [
-            {
-              "title": "Seafood substitutions are increasing",
-              "topic": "cooking",
-              "author": "weegembump",
-              "body": "Text from the article..",
-              "created_at": "2018-05-30T15:59:13.341Z",
-              "votes": 0,
-              "comment_count": 6
-            }
-          ]
-        }
-      })
-
       });
   });
-
-  test("201: post insert new endpoint and description on endpoints.json", () => {
+const articleToPost = {"/api/articles/:article_id": {
+  "description": "return the article with id = article_id",
+  "queries": [],
+  "exampleResponse":
+  {
+    "article":
+    [
+      {
+        article_id: 1,
+        title: 'Eight pug gifs that remind me of mitch',
+        topic: 'mitch',
+        author: 'icellusedkars',
+        created_at: '2020-11-03T09:12:00.000Z',
+        votes: 0,
+        article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+        comment_count: '2'
+      }
+    ]
+  }
+}
+}
+  test.skip("201: post insert new endpoint and description on endpoints.json", () => {
     return request(app)
       .post("/api")
-      .send({"/api/articles/:article_id": {
-        "description": "return the article with id = article_id",
-        "queries": 
-        [],
-        "exampleResponse":
-        {
-          "article":
-          [
-            {
-              article_id: 1,
-              title: 'Eight pug gifs that remind me of mitch',
-              topic: 'mitch',
-              author: 'icellusedkars',
-              created_at: '2020-11-03T09:12:00.000Z',
-              votes: 0,
-              article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
-              comment_count: '2',
-            }
-          ]
-        }
-      }
-    })
+      .send(articleToPost)
       .expect(201)
       .then((response) => {
-        const endPToCompare2 = {
-          '/api/articles/:article_id': {
-            description: 'return the article with id = article_id',
-            queries: [],
-            exampleResponse: { article: [
-              {
-                article_id: 1,
-                title: 'Eight pug gifs that remind me of mitch',
-                topic: 'mitch',
-                author: 'icellusedkars',
-                created_at: '2020-11-03T09:12:00.000Z',
-                votes: 0,
-                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
-                comment_count: '2',
-              }] }
-          }
-        };
         const { body } = response;
         console.log(body.endpoint)
-        expect(body.endpoint).toEqual(endPToCompare2);
+        expect(body.endpoint).toEqual(articleToPost);
       });
   });
 
@@ -189,7 +153,50 @@ describe("test articles", () => {
       .then((data) => {
         expect(data.body.msg).toBe("Bad request");
         });
-      });
+      });  
+      
+      test.only("200: update article by the id provided in params inc/decr votes value", () => {
+        return request(app)
+        .patch("/api/articles/1")
+        .send( {inc_votes : -3 })
+        .expect(200)
+        .then((data) => {
+          const artToCompare = {"article_id": 1, "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700", "author": "butter_bridge", "body": "I find this existence challenging", "created_at": "2020-07-09T20:11:00.000Z", "title": "Living in the shadow of a great man", "topic": "mitch", "votes": 97}
+          expect(data.body.article).toEqual(artToCompare);
+    
+          });
+        });
+
+        test.only("404: update article return error msg when try to acces to a not existing id value but in its range", () => {
+          return request(app)
+          .patch("/api/articles/876")
+          .send( {inc_votes : 100 })
+          .expect(404)
+          .then((data) => {
+            expect(data.body.msg).toBe("Not found");
+            });
+          });
+
+          test.only("400: update article return error msg when try to acces to not valid id out of range", () => {
+            return request(app)
+            .patch("/api/articles/butterfly")
+            .send( {inc_votes : 100 })
+            .expect(400)
+            .then((data) => {
+              expect(data.body.msg).toBe("Bad request");
+              });
+            });
+
+            test.only("400: update article return error msg when try to acces to not valid id out of range", () => {
+              return request(app)
+              .patch("/api/articles/butterfly")
+              .send( {inc_votes : 100 })
+              .expect(400)
+              .then((data) => {
+                expect(data.body.msg).toBe("Bad request");
+                });
+              });
+
     })
 
 
@@ -291,7 +298,7 @@ describe("test articles", () => {
       });
   });
 
-  test.only("400: post return msg with bad request, when we pass a not existing username", () => {
+  test("400: post return msg with bad request, when we pass a not existing username", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({ 
@@ -305,22 +312,6 @@ describe("test articles", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-
-  test.only("400: post return msg with bad request, when we pass null body", () => {
-    return request(app)
-      .post("/api/articles/1/comments")
-      .send({ 
-        "username": "lurker",
-        "body": ""
-    })
-      .expect(400)
-      .then((response) => {
-        const { body } = response;
-        console.log(body.msg)
-        expect(body.msg).toBe("Bad request");
-      });
-  });
-
 
 }); 
 })

@@ -1,4 +1,4 @@
-const { selectAllArticles, selectArticleById } = require("../models/articles");
+const { selectAllArticles, selectArticleById, updateArticleById } = require("../models/articles");
 
 exports.getAllArticles = (req, res, next) => {
   selectAllArticles(req)
@@ -19,6 +19,26 @@ exports.getArticlesById = (req, res, next) => {
   selectArticleById(article_id)
     .then((article) => {
       console.log(article);
+      if (article.code === "22P02") {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+      }
+      if (article.status === 404) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      res.status(200).send({ article });
+    })
+
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+}; 
+
+exports.patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const {inc_votes} = req.body;
+  updateArticleById(article_id, inc_votes)
+    .then((article) => {
       if (article.code === "22P02") {
         return Promise.reject({ status: 400, msg: "Bad request" });
       }

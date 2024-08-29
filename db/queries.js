@@ -39,4 +39,17 @@ exports.queryInsertComment =
                FROM users
                WHERE username = $1), $2, $3, (SELECT article_id
                                               FROM articles 
-                                              WHERE article_id = $4)) RETURNING *;` 
+                                              WHERE article_id = $4)) RETURNING *;` ;
+
+exports.queryUpdateArticlesByIdSum = 
+`UPDATE articles
+SET votes = votes + $1
+WHERE article_id = $2 
+RETURNING *;`;
+
+exports.queryUpdateArticlesByIdNeg = 
+`UPDATE articles
+SET votes = votes - $1
+WHERE article_id = $2 
+RETURNING *;`;
+

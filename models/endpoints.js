@@ -19,7 +19,9 @@ const insertEndpoint = (req) => {
   let description = {}
   let queries = {}
   let exampleResponse = {}
+  let url = {}
   for(const key in endPToInsert){
+    url = key
     for(const key2 in endPToInsert[key]){
       if( key2 === "description"){
       description = endPToInsert[key][key2]
@@ -37,23 +39,20 @@ const insertEndpoint = (req) => {
     .then((endP) => {
      
       const parseEndP = JSON.parse(endP);
-      const valuesEndpoints = Object.values(parseEndP)
-      console.log(valuesEndpoints)
-
       if(description && queries && exampleResponse){
-
-      if (!valuesEndpoints.includes(endPToInsert)) {
-        parseEndP.merge(endPToInsert)
+        if(!parseEndP[url]){
+          parseEndP[url] = endPToInsert[url]
         fs.writeFile(
           "endpoints.json",
           JSON.stringify(parseEndP),
           (error) => {
-            if (error) return error;
+            if (error){console.log(error) 
+              return error;}
             else  return endPToInsert;;
-          })
+          }) 
       }
     }
-      return Promise.reject({msg : "Bad request"})
+      return Promise.reject({status : 400, msg : "Bad request"})
     })
     .catch((error) => {
       console.log(error);

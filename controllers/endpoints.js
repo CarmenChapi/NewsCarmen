@@ -16,11 +16,12 @@ exports.postEndpoint = (req, res, next) => {
 
   insertEndpoint(req)
     .then((endpoint) => {
+      console.log(endpoint)
       if (endpoint.msg === "Bad request") {
         return Promise.reject({ status: 400, msg: "Bad request" });
-      } else {
-        res.status(201).send({ endpoint });
       }
+        res.status(201).send({ endpoint });
+    
     })
 
     .catch(err => {
