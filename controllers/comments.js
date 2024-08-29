@@ -1,8 +1,7 @@
 
-const { selectAllComments, selectCommentsByArticleId, insertComment } = require("../models/comments");
+const { selectAllComments, selectCommentsByArticleId, insertComment, deleteCommentById } = require("../models/comments");
 
 exports.getAllComments = (req, res, next) => {
-    console.log("conttrol")
     selectAllComments(req)
     .then((comments) => {
       res.status(200).send({ comments });
@@ -46,6 +45,23 @@ exports.getCommentsByAId = (req, res, next) => {
         }
   
         res.status(201).send({ comment});
+      })
+  
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
+  }; 
+
+  exports.deleteComment = (req, res, next) => {
+
+    deleteCommentById(req)
+      .then((comment) => {
+        if (comment.code) {
+          return Promise.reject({ status: 400, msg: "Bad request" });
+        }
+  
+        res.status(204).send({ comment});
       })
   
       .catch((err) => {

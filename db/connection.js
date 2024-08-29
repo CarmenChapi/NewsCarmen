@@ -10,14 +10,12 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 }
 
 const pgConfig = {};
-if(ENV==="production"){
-  pgConfig.connectionSting= process.env.DATABASE_URL
+if(ENV === "production"){
+  pgConfig.connectionSting = process.env.DATABASE_URL
   pgConfig.max = 2
 }
 
 const { Pool } = pg;
 
-const pool = new Pool(pgConfig);
-
-module.exports = pool;
+module.exports = new Pool(pgConfig);
 

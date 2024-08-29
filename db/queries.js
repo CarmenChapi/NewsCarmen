@@ -53,3 +53,11 @@ SET votes = votes - $1
 WHERE article_id = $2 
 RETURNING *;`;
 
+exports.queryDeleteCommentById = 
+`DELETE FROM comments
+WHERE comment_id = $1 
+ RETURNING *;`;
+
+ exports.querySelectUsers = 
+ `SELECT *
+ FROM users ;`
