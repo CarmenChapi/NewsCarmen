@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+
 const { getAllEndpoints, postEndpoint} = require("./controllers/endpoints")
 const {getAllTopics} = require("./controllers/topics")
 const {getAllArticles, getArticlesById, patchArticleById} = require("./controllers/articles.js")
@@ -26,7 +27,7 @@ app.get("/api/comments", getAllComments);
 app.post("/api/articles/:article_id/comments", postComment)
 app.delete("/api/comments/:comment_id", deleteComment)
 
-app.get("/api/users", getAllUsers);
+app.get("/api/users",getAllUsers)
 
 //SQL Errors
 app.use((err,req,res,next) => {

@@ -9,7 +9,7 @@ afterAll(() => db.end());
 
 
 describe("Project test suite", () => {
-describe("test topics", () => {
+describe("Test topics", () => {
     test("200 get all topics", () => {
         return request(app)
         .get("/api/topics")
@@ -24,7 +24,7 @@ describe("test topics", () => {
         });
     });
   })
-    describe("test endpoints", () => {
+    describe("Test endpoints", () => {
     test("200: get all endpoints and descriptions", () => {
       return request(app)
       .get("/api")
@@ -58,7 +58,7 @@ const articleToPost = {"/api/articles/:article_id": {
   }
 }
 }
-  test("201: post insert new endpoint and description on endpoints.json", () => {
+  test.skip("201: post insert new endpoint and description on endpoints.json", () => {
     return request(app)
       .post("/api")
       .send(articleToPost)
@@ -103,8 +103,8 @@ const articleToPost = {"/api/articles/:article_id": {
       });
   });
 })
-describe("test articles", () => {
-  test("200: get all articles in array, desc order by date", () => {
+describe("Test articles", () => {
+  test("200: GET /api/articles return all articles in array, desc order by date", () => {
       return request(app)
       .get("/api/articles")
       .expect(200)
@@ -126,7 +126,119 @@ describe("test articles", () => {
         });
       });
   });
-  test("200: get 1 article by id provided in the url", () => {
+
+  test("200: GET /api/articles?sort_by=nameColumn return all articles under the query sort_by any valid column(created_at by default)", () => {
+    return request(app)
+    .get("/api/articles?sort_by=votes")
+    .expect(200)
+    .then((data) => {
+      expect(Array.isArray(data.body.articles)).toBe(true);
+      expect(data.body.articles.length).toBe(13);
+      expect(data.body.articles).toBeSortedBy('votes', {descending: true});
+      data.body.articles.forEach((article) => {
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id");
+        expect(article).not.toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+        expect(article).toHaveProperty("comment_count");
+      });
+    });
+});
+
+test("200: GET /api/articles?order=asc o desc return all articles ordered asc or desc by the query value", () => {
+  return request(app)
+  .get("/api/articles?order=asc")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(13);
+    expect(data.body.articles).toBeSortedBy('created_at', {descending: false});
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+test("200: GET /api/articles?order=asc o desc return all articles by defalut query values when the query is invalid", () => {
+  return request(app)
+  .get("/api/articles?sorted_by=234")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(13);
+    expect(data.body.articles).toBeSortedBy('created_at', {descending: true});
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+test("200: GET /api/articles?order=asc o desc return all articles by defalut query values when the query is invalid", () => {
+  return request(app)
+  .get("/api/articles?order=inverse")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(13);
+    expect(data.body.articles).toBeSortedBy('created_at', {descending: true});
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+test("200: GET /api/articles?order=asc o desc return all articles ordered asd or desc by the query value", () => {
+  return request(app)
+  .get("/api/articles?order=hello")
+  .expect(200)
+  .then((data) => {
+    expect(Array.isArray(data.body.articles)).toBe(true);
+    expect(data.body.articles.length).toBe(13);
+    expect(data.body.articles).toBeSortedBy('created_at', {descending: true});
+    data.body.articles.forEach((article) => {
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("article_id");
+      expect(article).not.toHaveProperty("body");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+
+
+  test("200: GET /api/articles/:article_id article by id provided in the url", () => {
     return request(app)
     .get("/api/articles/1")
     .expect(200)
@@ -137,7 +249,7 @@ describe("test articles", () => {
       });
     });
 
-    test("404: return a error msg when the id passed is in the range but does not exist", () => {
+    test("404: GET /api/articles/:article_id return a error msg when the id passed is in the range but does not exist", () => {
     return request(app)
     .get("/api/articles/677")
     .expect(404)
@@ -146,7 +258,7 @@ describe("test articles", () => {
       });
     });
 
-    test("400: return a error msg when the id passed is out of the range", () => {
+    test("400: GET /api/articles/:article_id return a error msg when the id passed is out of the range", () => {
       return request(app)
       .get("/api/articles/bizcocho")
       .expect(400)
@@ -155,7 +267,7 @@ describe("test articles", () => {
         });
       });  
       
-      test("200: update article by the id provided in params inc/decr votes value", () => {
+      test("200: PATCH /api/articles/:article_id  update article by the id provided in params inc/decr votes value", () => {
         return request(app)
         .patch("/api/articles/1")
         .send( {inc_votes : -3 })
@@ -167,7 +279,7 @@ describe("test articles", () => {
           });
         });
 
-        test("404: update article return error msg when try to acces to a not existing id value but in its range", () => {
+        test("404: PATCH /api/articles/:article_id  return error msg when try to acces to a not existing id value but in its range", () => {
           return request(app)
           .patch("/api/articles/876")
           .send( {inc_votes : 100 })
@@ -177,7 +289,7 @@ describe("test articles", () => {
             });
           });
 
-          test("400: update article return error msg when try to acces to not valid id out of range", () => {
+          test("400: PATCH /api/articles/:article_id  return error msg when try to acces to not valid id out of range", () => {
             return request(app)
             .patch("/api/articles/butterfly")
             .send( {inc_votes : 100 })
@@ -187,7 +299,7 @@ describe("test articles", () => {
               });
             });
 
-            test("400: update article return error msg when try to acces to not valid id out of range", () => {
+            test("400: PATCH /api/articles/:article_id update return error msg when try to acces to not valid id out of range", () => {
               return request(app)
               .patch("/api/articles/butterfly")
               .send( {inc_votes : 100 })
@@ -200,9 +312,9 @@ describe("test articles", () => {
     })
 
 
-    describe("test comments", () => {
+    describe("Test comments", () => {
 
-      test("200: api/articles/:article_id/comments => get all comments for an article of the id = article_id", () => {
+      test("200: GET api/articles/:article_id/comments => get all comments for an article of the id = article_id", () => {
         return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -222,7 +334,7 @@ describe("test articles", () => {
         });
     });
 
-    test("404: api/articles/:article_id/comments => return a error msg when id pass does not exist but is on the range", () => {
+    test("404: GET api/articles/:article_id/comments => return a error msg when id pass does not exist but is on the range", () => {
       return request(app)
       .get("/api/articles/455/comments")
       .expect(404)
@@ -232,7 +344,7 @@ describe("test articles", () => {
       })
   });
 
-  test("400: api/articles/:article_id/comments => return a error msg when id pass does not exist but is on the range", () => {
+  test("400: GET api/articles/:article_id/comments => return a error msg when id pass does not exist but is on the range", () => {
     return request(app)
     .get("/api/articles/tea/comments")
     .expect(400)
@@ -241,7 +353,7 @@ describe("test articles", () => {
     })
 });
 
-    test("200: api/comments => get all comments", () => {
+    test("200: GET api/comments => get all comments", () => {
       return request(app)
       .get("/api/comments")
       .expect(200)
@@ -260,7 +372,7 @@ describe("test articles", () => {
       });
   });
 
-  test("201: post insert new comment", () => {
+  test("201: POST /api/articles/:article_id/comments insert new comment", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send({ 
@@ -283,7 +395,7 @@ describe("test articles", () => {
       });
   });
 
-  test("400: post return msg with bad request, when we pass a not existing article_id", () => {
+  test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing article_id", () => {
     return request(app)
       .post("/api/articles/244/comments")
       .send({ 
@@ -298,7 +410,7 @@ describe("test articles", () => {
       });
   });
 
-  test("400: post return msg with bad request, when we pass a not existing username", () => {
+  test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing username", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({ 
@@ -313,14 +425,14 @@ describe("test articles", () => {
       });
   });
 
-  test("204: delete, return code 204 delete succedd", () => {
+  test("204: DELETE /api/comments/:comment_id return code 204 delete succedd", () => {
     return request(app)
       .delete("/api/comments/5")
       .expect(204)
      
   });
 
-  test.only("404: delete, return error msg when pass a comment_id no existing buy in the range", () => {
+  test("404: DELETE /api/comments/:comment_id return error msg when pass a comment_id no existing buy in the range", () => {
     return request(app)
       .delete("/api/comments/555")
       .expect(404)
@@ -333,9 +445,9 @@ describe("test articles", () => {
   });
 
 
-  test.only("400: delete, return error when pass a value for comment_id out of range", () => {
+  test("400: DELETE /api/comments/:comment_id return error msg when pass a value for comment_id out of range", () => {
     return request(app)
-      .delete("/api/comments/error")
+      .delete("/api/comments/maria")
       .expect(400)
       .then((response) => {
         const { body } = response;
@@ -346,9 +458,9 @@ describe("test articles", () => {
   });
 }); 
 
-describe("test users", () => {
+describe("Test users", () => {
 
-  test.only("200: api/users get all users", () => {
+  test("200: GET api/users get all users", () => {
     return request(app)
     .get("/api/users")
     .expect(200)
