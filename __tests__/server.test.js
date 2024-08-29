@@ -58,7 +58,7 @@ const articleToPost = {"/api/articles/:article_id": {
   }
 }
 }
-  test.skip("201: post insert new endpoint and description on endpoints.json", () => {
+  test("201: post insert new endpoint and description on endpoints.json", () => {
     return request(app)
       .post("/api")
       .send(articleToPost)
