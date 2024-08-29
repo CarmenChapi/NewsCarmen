@@ -2,7 +2,6 @@
 const { selectAllComments, selectCommentsByArticleId, insertComment, deleteCommentById } = require("../models/comments");
 
 exports.getAllComments = (req, res, next) => {
-    console.log("conttrol")
     selectAllComments(req)
     .then((comments) => {
       res.status(200).send({ comments });

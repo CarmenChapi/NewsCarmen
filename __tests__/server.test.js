@@ -313,38 +313,59 @@ describe("test articles", () => {
       });
   });
 
-  test.only("204: delete a comment by id provided", () => {
+  test("204: delete, return code 204 delete succedd", () => {
     return request(app)
       .delete("/api/comments/5")
       .expect(204)
+     
   });
 
-
-  test.only("404: delete a comment, return a msg error when the id does not exist but it is in its range", () => {
+  test.only("404: delete, return error msg when pass a comment_id no existing buy in the range", () => {
     return request(app)
-      .delete("/api/comments/545")
+      .delete("/api/comments/555")
       .expect(404)
       .then((response) => {
         const { body } = response;
         console.log(body.msg)
         expect(body.msg).toBe("Not found");
+      });
+     
   });
 
+
+  test.only("400: delete, return error when pass a value for comment_id out of range", () => {
+    return request(app)
+      .delete("/api/comments/error")
+      .expect(400)
+      .then((response) => {
+        const { body } = response;
+        console.log(body.msg)
+        expect(body.msg).toBe("Bad request");
+      });
+     
+  });
 }); 
 
-test.only("400: delete a comment, return a msg error when the id pass is not in its range", () => {
-  return request(app)
-    .delete("/api/comments/error")
-    .expect(400)
-    .then((response) => {
-      const { body } = response;
-      console.log(body.msg)
-      expect(body.msg).toBe("Bad request");
+describe("test users", () => {
+
+  test.only("200: api/users get all users", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then((data) => {
+  
+      expect(Array.isArray(data.body.users)).toBe(true);
+      expect(data.body.users.length).toBe(4);
+      data.body.users.forEach((user) => {
+        expect(user).toHaveProperty("username");
+        expect(user).toHaveProperty("name");
+        expect(user).toHaveProperty("avatar_url");
+      });
+    });
 });
 
+})
 
 
 })
 
-    })
-  })
