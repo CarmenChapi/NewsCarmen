@@ -58,7 +58,7 @@ const articleToPost = {"/api/articles/:article_id": {
   }
 }
 }
-  test.skip("201: post insert new endpoint and description on endpoints.json", () => {
+  test("201: post insert new endpoint and description on endpoints.json", () => {
     return request(app)
       .post("/api")
       .send(articleToPost)
@@ -155,7 +155,7 @@ describe("test articles", () => {
         });
       });  
       
-      test.only("200: update article by the id provided in params inc/decr votes value", () => {
+      test("200: update article by the id provided in params inc/decr votes value", () => {
         return request(app)
         .patch("/api/articles/1")
         .send( {inc_votes : -3 })
@@ -167,7 +167,7 @@ describe("test articles", () => {
           });
         });
 
-        test.only("404: update article return error msg when try to acces to a not existing id value but in its range", () => {
+        test("404: update article return error msg when try to acces to a not existing id value but in its range", () => {
           return request(app)
           .patch("/api/articles/876")
           .send( {inc_votes : 100 })
@@ -177,7 +177,7 @@ describe("test articles", () => {
             });
           });
 
-          test.only("400: update article return error msg when try to acces to not valid id out of range", () => {
+          test("400: update article return error msg when try to acces to not valid id out of range", () => {
             return request(app)
             .patch("/api/articles/butterfly")
             .send( {inc_votes : 100 })
@@ -187,7 +187,7 @@ describe("test articles", () => {
               });
             });
 
-            test.only("400: update article return error msg when try to acces to not valid id out of range", () => {
+            test("400: update article return error msg when try to acces to not valid id out of range", () => {
               return request(app)
               .patch("/api/articles/butterfly")
               .send( {inc_votes : 100 })
@@ -313,6 +313,38 @@ describe("test articles", () => {
       });
   });
 
+  test.only("204: delete a comment by id provided", () => {
+    return request(app)
+      .delete("/api/comments/5")
+      .expect(204)
+  });
+
+
+  test.only("404: delete a comment, return a msg error when the id does not exist but it is in its range", () => {
+    return request(app)
+      .delete("/api/comments/545")
+      .expect(404)
+      .then((response) => {
+        const { body } = response;
+        console.log(body.msg)
+        expect(body.msg).toBe("Not found");
+  });
+
 }); 
+
+test.only("400: delete a comment, return a msg error when the id pass is not in its range", () => {
+  return request(app)
+    .delete("/api/comments/error")
+    .expect(400)
+    .then((response) => {
+      const { body } = response;
+      console.log(body.msg)
+      expect(body.msg).toBe("Bad request");
+});
+
+
+
 })
 
+    })
+  })

@@ -3,7 +3,7 @@ const app = express();
 const { getAllEndpoints, postEndpoint} = require("./controllers/endpoints")
 const {getAllTopics} = require("./controllers/topics")
 const {getAllArticles, getArticlesById, patchArticleById} = require("./controllers/articles.js")
-const {getAllComments, getCommentsByAId, postComment} = require("./controllers/comments.js")
+const {getAllComments, getCommentsByAId, postComment, deleteComment} = require("./controllers/comments.js")
 app.use(express.json());
 
 
@@ -23,6 +23,7 @@ app.patch("/api/articles/:article_id", patchArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByAId);
 app.get("/api/comments", getAllComments);
 app.post("/api/articles/:article_id/comments", postComment)
+app.delete("/api/comments/:comment_id", deleteComment)
 
 //SQL Errors
 app.use((err,req,res,next) => {
