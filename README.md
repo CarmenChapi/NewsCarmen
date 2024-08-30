@@ -5,9 +5,8 @@ For set up the db you need:
 + PGDATABASE=name_databe_dev -> in .env.development
 + PGDATABASE=name_databe_test -> in .env.test
 
-
-
-For pass the test of the Task 3, use the original endpoints.json provided
++Link to the hosted version
+https://newscarmen.onrender.com/api
 
 --- 
 

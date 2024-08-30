@@ -24,7 +24,7 @@ describe("Project Test Suite", () => {
     });
   });
   describe("Test endpoints", () => {
-    test.only("200: GET /api all endpoints and descriptions", () => {
+    test("200: GET /api all endpoints and descriptions", () => {
       return request(app)
         .get("/api")
         .expect(200)
