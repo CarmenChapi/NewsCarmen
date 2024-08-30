@@ -31,6 +31,11 @@ exports.querySelectComment =
 `SELECT *
 FROM comments ; `
 
+exports.querySelectCommentById = 
+`SELECT *
+FROM comments 
+WHERE comment_id = $1 ; `
+
 exports.querySelectCommentsByArticleId = 
 `SELECT *
 FROM comments 
