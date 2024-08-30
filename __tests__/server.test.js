@@ -30,8 +30,8 @@ describe("Project Test Suite", () => {
         .expect(200)
         .then((data) => {
           expect(typeof data.body.endpoints).toBe("object");
-          expect(Object.keys(data.body.endpoints).length).toBe(9);
-          expect(Object.values(data.body.endpoints).length).toBe(9);
+          expect(Object.keys(data.body.endpoints).length).toBe(11);
+          expect(Object.values(data.body.endpoints).length).toBe(11);
         });
     });
     const articleToPost = {
@@ -412,15 +412,28 @@ describe("Project Test Suite", () => {
           });
       });
 
-      test("400: PATCH /api/articles/:article_id update return error msg when try to acces to not valid id out of range", () => {
+      test("400: PATCH /api/articles/:article_id return error msg when the body send inc_votes does have a numeric value", () => {
         return request(app)
-          .patch("/api/articles/butterfly")
-          .send({ inc_votes: 100 })
+          .patch("/api/articles/2")
+          .send({ inc_votes: "select votes from comments" })
           .expect(400)
           .then((data) => {
+            console.log(data.body)
             expect(data.body.msg).toBe("Bad request");
           });
       });
+
+      test("400: PATCH /api/articles/:article_id return error msg when inc_votes does have any value", () => {
+        return request(app)
+          .patch("/api/articles/2")
+          .send({ inc_votes: ""})
+          .expect(400)
+          .then((data) => {
+            console.log(data.body)
+            expect(data.body.msg).toBe("Bad request");
+          });
+      });
+
     });
   });
 
@@ -484,7 +497,7 @@ describe("Project Test Suite", () => {
       });
     });
   });
-  describe("POST/DELETE", () => {
+  describe("POST", () => {
     test("201: POST /api/articles/:article_id/comments insert new comment", () => {
       return request(app)
         .post("/api/articles/2/comments")
@@ -538,9 +551,10 @@ describe("Project Test Suite", () => {
           expect(body.msg).toBe("Bad request");
         });
     });
-
+  })
+    describe("DELETE", () => {
     test("204: DELETE /api/comments/:comment_id return code 204 delete succedd", () => {
-      return request(app).delete("/api/comments/5").expect(204);
+      return request(app).delete("/api/comments/6").expect(204);
     });
 
     test("404: DELETE /api/comments/:comment_id return error msg when pass a comment_id no existing buy in the range", () => {
@@ -562,8 +576,73 @@ describe("Project Test Suite", () => {
           expect(body.msg).toBe("Bad request");
         });
     });
-  });
-});
+  })
+  describe("PATCH", () => {
+    test("200: PATCH /api/comments/:comment_id return comment by comment_id, change vote inc o decr its value by body send {inc_votes: new_value} ", () => {
+      return request(app)
+        .patch("/api/comments/5")
+        .send({inc_votes: 10})
+        .expect(200)
+        .then((response) => {
+          const { body } = response;
+          const comToCompare =   {
+            comment_id: 5,
+            body: 'I hate streaming noses',
+            article_id: 1,
+            author: 'icellusedkars',
+            votes: 10,
+            created_at: '2020-11-03T21:00:00.000Z'
+          }
+      ;
+         expect(body.comment).toEqual(comToCompare);
+        });
+    });
+    test("404: PATCH /api/comments/:comment_id return msg error when the comment_id does not exist but is in the range", () => {
+      return request(app)
+        .patch("/api/comments/5555")
+        .send({inc_votes: 10})
+        .expect(404)
+        .then((response) => {
+          const { body } = response;
+          expect(body.msg).toBe("Not found");
+        });
+      })
+
+      test("400: PATCH /api/comments/:comment_id return msg error when the comment_id is out of range", () => {
+        return request(app)
+          .patch("/api/comments/select * from users;")
+          .send({inc_votes: 10})
+          .expect(400)
+          .then((response) => {
+            const { body } = response;
+            expect(body.msg).toBe("Bad request");
+          });
+        })
+
+        test("400: PATCH /api/comments/:comment_id return msg error when the comment_id exist but the value for upgrade is not a number", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({inc_votes: "mar33"})
+            .expect(400)
+            .then((response) => {
+              const { body } = response;
+              console.log(body)
+              expect(body.msg).toBe("Bad request");
+            });
+          })
+
+          test("400: PATCH /api/comments/:comment_id return msg error when the comment_id exist but the value for upgrade is not been passed", () => {
+            return request(app)
+              .patch("/api/comments/1")
+              .expect(400)
+              .then((response) => {
+                const { body } = response;
+                console.log(body)
+                expect(body.msg).toBe("Bad request");
+              });
+            })
+
+    });
 
 describe("Test users", () => {
   test("200: GET api/users get all users", () => {
@@ -593,7 +672,7 @@ describe("Test users", () => {
         expect(data.body.user).toHaveProperty("avatar_url");
       });
   });
-  test("404: GET api/users/username", () => {
+  test("404: GET api/users/:username", () => {
     return request(app)
       .get("/api/users/mariaDelMonte")
       .send()
@@ -603,6 +682,6 @@ describe("Test users", () => {
         expect(body.msg).toBe("Not found");
       });
   });
-
+});
 
 });

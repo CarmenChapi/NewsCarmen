@@ -75,4 +75,17 @@ WHERE comment_id = $1
  exports.querySelectUserById = 
  `SELECT *
  FROM users 
- WHERE username like $1;`
+ WHERE username like $1;` 
+
+ exports.queryUpdateCommentsByIdNeg =
+ `UPDATE comments
+SET votes = votes - $1
+WHERE comment_id = $2 
+RETURNING *;`;
+
+
+exports.queryUpdateCommentByIdSum =
+`UPDATE comments
+SET votes = votes + $1
+WHERE comment_id = $2 
+RETURNING *;`;
