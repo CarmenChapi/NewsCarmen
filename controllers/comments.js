@@ -1,5 +1,5 @@
 
-const { selectAllComments, selectCommentsByArticleId, selectCommentsByCommentId,insertComment, deleteCommentById } = require("../models/comments");
+const { selectAllComments, selectCommentsByArticleId, updateCommentById, selectCommentsByCommentId,insertComment, deleteCommentById } = require("../models/comments");
 
 exports.getAllComments = (req, res, next) => {
     selectAllComments(req)
@@ -85,6 +85,25 @@ exports.getCommentsByCmId = (req, res, next) => {
           return Promise.reject({ status: 404, msg: "Not found" });
         }
         res.status(204).send({ comment});
+      })
+  
+      .catch((err) => {
+        console.log(err);
+        next(err);
+      });
+  }; 
+
+  exports.patchComment= (req, res, next) => {
+
+    updateCommentById(req)
+      .then((comment) => {
+        if (comment.code) {
+          return Promise.reject({ status: 400, msg: "Bad request" });
+        }
+        if(comment.status === 404){
+          return Promise.reject({ status: 404, msg: "Not found" });
+        }
+        res.status(200).send({ comment});
       })
   
       .catch((err) => {
