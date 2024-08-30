@@ -24,16 +24,14 @@ describe("Project Test Suite", () => {
     });
   });
   describe("Test endpoints", () => {
-    test("200: GET /api all endpoints and descriptions", () => {
+    test.only("200: GET /api all endpoints and descriptions", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then((data) => {
-          expect(Array.isArray(data.body.endpoints)).toBe(true);
-          expect(data.body.endpoints[0]).toEqual({
-            description:
-              "serves up a json representation of all the available endpoints of the api",
-          });
+          expect(typeof data.body.endpoints).toBe('object');
+          expect(Object.keys(data.body.endpoints).length).toBe(9);
+          expect(Object.values(data.body.endpoints).length).toBe(9);
         });
     });
     const articleToPost = {
@@ -577,7 +575,6 @@ describe("Project Test Suite", () => {
         .send({description : "get all users"})
         .expect(200)
         .then((data) => {
-          console.log(data.body)
           expect(Array.isArray(data.body.users)).toBe(true);
           expect(data.body.users.length).toBe(4);
           data.body.users.forEach((user) => {

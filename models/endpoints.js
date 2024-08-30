@@ -6,7 +6,7 @@ const selectEndpoints = () => {
     .readFile("endpoints.json", "utf-8")
     .then((endP) => {
       const parseEndP = JSON.parse(endP);
-      return Object.values(parseEndP);
+      return parseEndP;
     })
     .catch((error) => {
       console.log(error);
