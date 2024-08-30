@@ -69,11 +69,11 @@ API for the purpose of accessing application data programmatically. To mimic the
 ## For set up the database you need:
     Create in the project dirv22.4.0ectory path 2 files called '.env.development' and '.env.test' and each must contain:
 
-### PGDATABASE=name_databe_dev  
-    in .env.development
+#### PGDATABASE=name_databe_dev  
+    .env.development
 
-### PGDATABASE=name_databe_test 
-    in .env.test
+#### PGDATABASE=name_databe_test 
+    .env.test
 
 ## Link to the hosted version
     https://newscarmen.onrender.com/api

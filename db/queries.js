@@ -71,3 +71,8 @@ WHERE comment_id = $1
  exports.querySelectUsers = 
  `SELECT *
  FROM users ;`
+
+ exports.querySelectUserById = 
+ `SELECT *
+ FROM users 
+ WHERE username like $1;`

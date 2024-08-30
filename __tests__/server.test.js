@@ -29,7 +29,7 @@ describe("Project Test Suite", () => {
         .get("/api")
         .expect(200)
         .then((data) => {
-          expect(typeof data.body.endpoints).toBe('object');
+          expect(typeof data.body.endpoints).toBe("object");
           expect(Object.keys(data.body.endpoints).length).toBe(9);
           expect(Object.values(data.body.endpoints).length).toBe(9);
         });
@@ -56,7 +56,7 @@ describe("Project Test Suite", () => {
       },
     };
     test("201: POST /api/post insert new endpoint and description on endpoints.json", () => {
-      return request(app) 
+      return request(app)
         .post("/api")
         .send(articleToPost)
         .expect(201)
@@ -73,8 +73,10 @@ describe("Project Test Suite", () => {
         .expect(201)
         .then((response) => {
           const { body } = response;
-          console.log(Object.keys(body.endpoint))
-          expect(Object.keys(body.endpoint)).toEqual(Object.keys(articleToPost));
+          console.log(Object.keys(body.endpoint));
+          expect(Object.keys(body.endpoint)).toEqual(
+            Object.keys(articleToPost)
+          );
         });
     });
 
@@ -367,8 +369,6 @@ describe("Project Test Suite", () => {
             expect(data.body.msg).toBe("Bad request");
           });
       });
-
-    
     });
     describe("PATCH", () => {
       test("200: PATCH /api/articles/:article_id  update article by the id provided in params inc/decr votes value", () => {
@@ -431,7 +431,6 @@ describe("Project Test Suite", () => {
           .get("/api/articles/1/comments")
           .expect(200)
           .then((data) => {
-
             expect(Array.isArray(data.body.comments)).toBe(true);
             expect(data.body.comments.length).toBe(11);
             expect(data.body.comments).toBeSortedBy("created_at", {
@@ -485,104 +484,125 @@ describe("Project Test Suite", () => {
       });
     });
   });
-    describe("POST/DELETE", () => {
-      test("201: POST /api/articles/:article_id/comments insert new comment", () => {
-        return request(app)
-          .post("/api/articles/2/comments")
-          .send({
-            username: "lurker",
-            body: "this comment is about the food article ",
-          })
-          .expect(201)
-          .then((response) => {
-            const { body } = response;
-            expect(body.comment).toHaveProperty("comment_id");
-            expect(body.comment).toHaveProperty("votes");
-            expect(body.comment).toHaveProperty("created_at");
-            expect(body.comment).toHaveProperty("author");
-            expect(body.comment).toHaveProperty("body");
-            expect(body.comment).toHaveProperty("article_id");
-            expect(body.comment.author).toBe("lurker");
-            expect(body.comment.body).toBe(
-              "this comment is about the food article "
-            );
-            expect(body.comment.article_id).toBe(2);
-          });
-      });
-
-      test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing article_id", () => {
-        return request(app)
-          .post("/api/articles/244/comments")
-          .send({
-            username: "lurker",
-            body: "this comment is about the food article ",
-          })
-          .expect(400)
-          .then((response) => {
-            const { body } = response;
-
-            expect(body.msg).toBe("Bad request");
-          });
-      });
-
-      test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing username", () => {
-        return request(app)
-          .post("/api/articles/1/comments")
-          .send({
-            username: "aaa",
-            body: "this comment is about the food article ",
-          })
-          .expect(400)
-          .then((response) => {
-            const { body } = response;
-
-            expect(body.msg).toBe("Bad request");
-          });
-      });
-
-      test("204: DELETE /api/comments/:comment_id return code 204 delete succedd", () => {
-        return request(app).delete("/api/comments/5").expect(204);
-      });
-
-      test("404: DELETE /api/comments/:comment_id return error msg when pass a comment_id no existing buy in the range", () => {
-        return request(app)
-          .delete("/api/comments/555")
-          .expect(404)
-          .then((response) => {
-            const { body } = response;
-
-            expect(body.msg).toBe("Not found");
-          });
-      });
-
-      test("400: DELETE /api/comments/:comment_id return error msg when pass a value for comment_id out of range", () => {
-        return request(app)
-          .delete("/api/comments/maria")
-          .expect(400)
-          .then((response) => {
-            const { body } = response;
-
-            expect(body.msg).toBe("Bad request");
-          });
-      });
-    });
-  });
-
-  describe("Test users", () => {
-    test("200: GET api/users get all users", () => {
+  describe("POST/DELETE", () => {
+    test("201: POST /api/articles/:article_id/comments insert new comment", () => {
       return request(app)
-        .get("/api/users")
-        .send({description : "get all users"})
-        .expect(200)
-        .then((data) => {
-          expect(Array.isArray(data.body.users)).toBe(true);
-          expect(data.body.users.length).toBe(4);
-          data.body.users.forEach((user) => {
-            expect(user).toHaveProperty("username");
-            expect(user).toHaveProperty("name");
-            expect(user).toHaveProperty("avatar_url");
-          });
+        .post("/api/articles/2/comments")
+        .send({
+          username: "lurker",
+          body: "this comment is about the food article ",
+        })
+        .expect(201)
+        .then((response) => {
+          const { body } = response;
+          expect(body.comment).toHaveProperty("comment_id");
+          expect(body.comment).toHaveProperty("votes");
+          expect(body.comment).toHaveProperty("created_at");
+          expect(body.comment).toHaveProperty("author");
+          expect(body.comment).toHaveProperty("body");
+          expect(body.comment).toHaveProperty("article_id");
+          expect(body.comment.author).toBe("lurker");
+          expect(body.comment.body).toBe(
+            "this comment is about the food article "
+          );
+          expect(body.comment.article_id).toBe(2);
+        });
+    });
+
+    test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing article_id", () => {
+      return request(app)
+        .post("/api/articles/244/comments")
+        .send({
+          username: "lurker",
+          body: "this comment is about the food article ",
+        })
+        .expect(400)
+        .then((response) => {
+          const { body } = response;
+
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+
+    test("400: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing username", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          username: "aaa",
+          body: "this comment is about the food article ",
+        })
+        .expect(400)
+        .then((response) => {
+          const { body } = response;
+
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+
+    test("204: DELETE /api/comments/:comment_id return code 204 delete succedd", () => {
+      return request(app).delete("/api/comments/5").expect(204);
+    });
+
+    test("404: DELETE /api/comments/:comment_id return error msg when pass a comment_id no existing buy in the range", () => {
+      return request(app)
+        .delete("/api/comments/555")
+        .expect(404)
+        .then((response) => {
+          const { body } = response;
+          expect(body.msg).toBe("Not found");
+        });
+    });
+
+    test("400: DELETE /api/comments/:comment_id return error msg when pass a value for comment_id out of range", () => {
+      return request(app)
+        .delete("/api/comments/maria")
+        .expect(400)
+        .then((response) => {
+          const { body } = response;
+          expect(body.msg).toBe("Bad request");
         });
     });
   });
+});
 
+describe("Test users", () => {
+  test("200: GET api/users get all users", () => {
+    return request(app)
+      .get("/api/users")
+      .send()
+      .expect(200)
+      .then((data) => {
+        expect(Array.isArray(data.body.users)).toBe(true);
+        expect(data.body.users.length).toBe(4);
+        data.body.users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+      });
+  });
+  test("200: GET api/users/username get the user info by username value", () => {
+    return request(app)
+      .get("/api/users/lurker")
+      .send()
+      .expect(200)
+      .then((data) => {
+        expect(data.body.user).toHaveProperty("username");
+        expect(data.body.user.username).toBe("lurker");
+        expect(data.body.user).toHaveProperty("name");
+        expect(data.body.user).toHaveProperty("avatar_url");
+      });
+  });
+  test("404: GET api/users/username", () => {
+    return request(app)
+      .get("/api/users/mariaDelMonte")
+      .send()
+      .expect(404)
+      .then((data) => {
+        const { body } = data;
+        expect(body.msg).toBe("Not found");
+      });
+  });
+
+
+});
