@@ -92,13 +92,11 @@
       ]
     }
   },
-
   "DELETE /api/comments/:comment_id": {
     "description": "delete the given comment by comment_id",
     "queries": [],
     "exampleResponse": {}
   },
-
   " GET /api/users": {
     "description": "get all the users",
     "queries": [],

@@ -571,7 +571,7 @@ describe("Project Test Suite", () => {
   });
 
   describe("Test users", () => {
-    test.only("200: GET api/users get all users", () => {
+    test("200: GET api/users get all users", () => {
       return request(app)
         .get("/api/users")
         .send({description : "get all users"})
