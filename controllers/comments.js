@@ -1,5 +1,5 @@
 
-const { selectAllComments, selectCommentsByArticleId, insertComment, deleteCommentById } = require("../models/comments");
+const { selectAllComments, selectCommentsByArticleId, selectCommentsByCommentId,insertComment, deleteCommentById } = require("../models/comments");
 
 exports.getAllComments = (req, res, next) => {
     selectAllComments(req)
@@ -33,6 +33,28 @@ exports.getCommentsByAId = (req, res, next) => {
         next(err);
       });
   }; 
+
+
+exports.getCommentsByCmId = (req, res, next) => {
+
+  const { article_id } = req.params;
+
+  selectCommentsByCommentId(article_id)
+    .then((comments) => {
+      if (comments.code === '22P02') {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+      }
+      if (comments.status === 404) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      res.status(200).send({ comments });
+    })
+
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+}; 
 
 
   exports.postComment = (req, res, next) => {

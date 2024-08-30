@@ -1,7 +1,7 @@
 
 const db = require("../db/connection.js");
 
-const { querySelectComment, querySelectCommentsByArticleId, queryInsertComment, queryDeleteCommentById } = require("../db/queries.js")
+const { querySelectComment, querySelectCommentsByArticleId, querySelectCommentById, queryInsertComment, queryDeleteCommentById } = require("../db/queries.js")
 
 
 const selectAllComments = () => {
@@ -21,14 +21,28 @@ const selectAllComments = () => {
 }
 
 const selectCommentsByArticleId = (id) => {
-  console.log(typeof id)
   
   return db.query(querySelectCommentsByArticleId, [id])
     .then(comments => {
       if(comments.rows.length === 0 ){
         return Promise.reject({status: 404, msg: "Not found"})
       }
-      console.log(comments.rows, comments.rows.length)
+      return comments.rows;
+    })
+    .catch(err => {
+      console.log(err)
+      return err;
+    })
+}
+
+const selectCommentsByCommentId = (id) => {
+
+  
+  return db.query(querySelectCommentById, [id])
+    .then(comments => {
+      if(comments.rows.length === 0 ){
+        return Promise.reject({status: 404, msg: "Not found"})
+      }
       return comments.rows;
     })
     .catch(err => {
@@ -71,4 +85,4 @@ const deleteCommentById = (req) => {
 }
 
 
-module.exports = {selectAllComments, selectCommentsByArticleId, insertComment, deleteCommentById}
+module.exports = {selectAllComments, selectCommentsByArticleId, selectCommentsByCommentId, insertComment, deleteCommentById}
