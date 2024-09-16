@@ -1,9 +1,12 @@
 const express = require("express");
+const cors = require('cors');
 const app = express();
+app.use(cors());
+
 
 const { getAllEndpoints, postEndpoint} = require("./controllers/endpoints")
 const {getAllTopics} = require("./controllers/topics")
-const {getAllArticles, getArticlesById, patchArticleById} = require("./controllers/articles.js")
+const {getAllArticles, getArticlesById, patchArticleById, postArticle} = require("./controllers/articles.js")
 const {getAllComments, getCommentsByAId, getCommentsByCmId, postComment, deleteComment, patchComment} = require("./controllers/comments.js")
 const {getAllUsers, getUserByID} = require("./controllers/users.js")
 app.use(express.json());
@@ -20,6 +23,7 @@ app.post("/api", postEndpoint);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id", getArticlesById);
 app.patch("/api/articles/:article_id", patchArticleById);
+app.post("/api/articles", postArticle);
 
 
 app.get("/api/articles/:article_id/comments", getCommentsByAId);

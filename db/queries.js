@@ -89,3 +89,21 @@ exports.queryUpdateCommentByIdSum =
 SET votes = votes + $1
 WHERE comment_id = $2 
 RETURNING *;`;
+
+exports.queryInsertArticle = 
+`INSERT INTO articles(
+    author, title, body, topic
+    ) VALUES ((SELECT username
+               FROM users
+               WHERE username = $1), $2, $3, (SELECT slug
+                                              FROM topics 
+                                              WHERE slug = $4)) RETURNING *;`
+exports.queryInsertArticleWithImgUrl = 
+`INSERT INTO articles(
+    author, title, body, topic, article_img_url
+    ) VALUES ((SELECT username
+               FROM users
+               WHERE username = $1), $2, $3, (SELECT slug
+                                              FROM topics 
+                                              WHERE slug = $4), $5) RETURNING *;`
+

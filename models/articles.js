@@ -17,6 +17,8 @@ const {
   querySelectArticlesById,
   queryUpdateArticlesByIdSum,
   queryUpdateArticlesByIdNeg,
+  queryInsertArticle,
+  queryInsertArticleWithImgUrl
 } = require("../db/queries.js");
 
 const selectAllArticles = (req) => {
@@ -92,4 +94,24 @@ const updateArticleById = (id, incVotes) => {
     });
 };
 
-module.exports = { selectAllArticles, selectArticleById, updateArticleById };
+const insertArticle = (req) => {
+
+  const {author, title, body, topic, article_img_url
+  } = req.body;
+  let query = queryInsertArticle
+  const paramsQuery = [author, title, body, topic]
+  if(article_img_url){
+    paramsQuery.push(article_img_url)
+    query = queryInsertArticleWithImgUrl
+  }
+console.log(query, paramsQuery)
+  return db
+  .query(
+    query , paramsQuery
+  )
+  .then(comment => {
+      return comment.rows[0];
+  })
+};
+
+module.exports = { selectAllArticles, selectArticleById, updateArticleById , insertArticle};
