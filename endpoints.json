@@ -1,1 +1,160 @@
-{"GET /api":{"description":"serves up a json representation of all the available endpoints of the api"},"GET /api/topics":{"description":"serves an array of all topics","queries":[],"exampleResponse":{"topics":[{"slug":"football","description":"Footie!"}]}},"GET /api/articles":{"description":"serves an array of all topics","queries":["author","topic","sort_by","order"],"exampleResponse":{"articles":[{"title":"Seafood substitutions are increasing","topic":"cooking","author":"weegembump","body":"Text from the article..","created_at":"2018-05-30T15:59:13.341Z","votes":0,"comment_count":6}]}},"GET /api/articles/:article_id":{"description":"return the article with id = article_id","queries":[],"exampleResponse":{"article":[{"article_id":1,"title":"Eight pug gifs that remind me of mitch","topic":"mitch","author":"icellusedkars","created_at":"2020-11-03T09:12:00.000Z","votes":0,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700","comment_count":"2"}]}},"GET api/articles/:article_id/comments":{"description":"get all comments for an article by its id","queries":[],"exampleResponse":{"comments":[{"comment_id":5,"body":"I hate streaming noses","article_id":1,"author":"icellusedkars","votes":0,"created_at":"2020-11-03T21:00:00.000Z"}]}},"POST api/articles/:article_id/comments":{"description":"add a comment for an article with id provided","queries":[],"exampleResponse":{"comment":{"comment_id":19,"body":"this comment is about the food article ","article_id":2,"author":"lurker","votes":0,"created_at":"2024-08-30T09:51:28.444Z"}}},"PATCH /api/articles/:article_id":{"description":"update an article by article_id increment o decrement its votes value","queries":[{"body":{"inc_votes":"newVote"}}],"exampleResponse":{"article":[{"article_id":1,"title":"Eight pug gifs that remind me of mitch","topic":"mitch","author":"icellusedkars","created_at":"2020-11-03T09:12:00.000Z","votes":97,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700","comment_count":"2"}]}},"DELETE /api/comments/:comment_id":{"description":"delete the given comment by comment_id","queries":[],"exampleResponse":{}},"GET /api/users":{"description":"get all the users","queries":[],"exampleResponse":{"users":[{"username":"butter_bridge","name":"jonny","avatar_url":"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"},{"username":"icellusedkars","name":"sam","avatar_url":"https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"}]}},"GET /api/users/:username":{"description":"get the user by username","queries":[],"exampleResponse":{"user":{"username":"lurker","name":"do_nothing","avatar_url":"https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"}}},"PATCH /api/comments/:comment_id":{"comment":{"comment_id":5,"body":"I hate streaming noses","article_id":1,"author":"icellusedkars","votes":10,"created_at":"2020-11-03T21:00:00.000Z"}}}
+{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/topics": {
+    "description": "serves an array of all topics",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+  "GET /api/articles": {
+    "description": "serves an array of all topics",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "return the article with id = article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "title": "Eight pug gifs that remind me of mitch",
+          "topic": "mitch",
+          "author": "icellusedkars",
+          "created_at": "2020-11-03T09:12:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          "comment_count": "2"
+        }
+      ]
+    }
+  },
+  "GET api/articles/:article_id/comments": {
+    "description": "get all comments for an article by its id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 5,
+          "body": "I hate streaming noses",
+          "article_id": 1,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2020-11-03T21:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST api/articles/:article_id/comments": {
+    "description": "add a comment for an article with id provided",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "body": "this comment is about the food article ",
+        "article_id": 2,
+        "author": "lurker",
+        "votes": 0,
+        "created_at": "2024-08-30T09:51:28.444Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "update an article by article_id increment o decrement its votes value",
+    "queries": [{ "body": { "inc_votes": "newVote" } }],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "title": "Eight pug gifs that remind me of mitch",
+          "topic": "mitch",
+          "author": "icellusedkars",
+          "created_at": "2020-11-03T09:12:00.000Z",
+          "votes": 97,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          "comment_count": "2"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete the given comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "get all the users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "get the user by username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "lurker",
+        "name": "do_nothing",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+      }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "update the votes on a comment given the comment's comment_id.",
+    "queries": [],
+    "exampleResponse": {
+        "comment": {
+        "comment_id": 5,
+        "body": "I hate streaming noses",
+        "article_id": 1,
+        "author": "icellusedkars",
+        "votes": 10,
+        "created_at": "2020-11-03T21:00:00.000Z"
+     }
+  }
+},
+  "POST /api/articles" : {
+    "description": "insert a new article",
+    "queries": [],
+    "exampleResponse": {
+      "article" : {
+      "article_id" : 14,
+      "title" : "La casa encantada",
+      "topic" : "cats",
+      "author" : "rogersop",
+      "body" : "This is a test",
+      "created_at" : "2024-08-31T14:08:23.459Z",
+      "votes": 0,
+      "article_img_url" : "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+      "comment_count" : 0
+      }
+    }
+}
+}
