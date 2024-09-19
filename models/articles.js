@@ -10,7 +10,7 @@ const validSortByValues = [
   "created_at",
   "article_img_url",
 ];
-const validTopicValues = ["mitch", "cats", "paper"];
+const validTopicValues = ["mitch", "cats", "paper", "coding","cooking","football"];
 
 const {
   querySelectArticles,
