@@ -7,7 +7,7 @@ const data = require("../db/data/test-data/index.js");
 beforeAll(() => seed(data));
 afterAll(() => db.end());
 
-describe("Project Test Suite", () => {
+describe("Project NC-NEWS Test Suite", () => {
   describe("Test topics", () => {
     test("200 get all topics", () => {
       return request(app)
@@ -370,6 +370,63 @@ describe("Project Test Suite", () => {
           });
       });
     });
+    describe("POST", () => {
+      test.only("201: POST /api/articles/  add a new article with propierty article_img_url, by default", () => {
+        return request(app)
+          .post("/api/articles")
+          .send({author : "rogersop", 
+            title : "La casa encantada",
+            body : "This is a test",
+            topic : "cats"})
+          .expect(201)
+          .then((data) => {
+            expect(data.body.article).toHaveProperty("author");
+            expect(data.body.article.author).toBe("rogersop");
+            expect(data.body.article).toHaveProperty("title");
+            expect(data.body.article.title).toBe("La casa encantada");
+            expect(data.body.article).toHaveProperty("article_id");
+            expect(data.body.article).toHaveProperty("body");
+            expect(data.body.article.body).toBe("This is a test");
+            expect(data.body.article).toHaveProperty("topic");
+            expect(data.body.article.topic).toBe("cats");
+            expect(data.body.article).toHaveProperty("created_at");
+            expect(data.body.article).toHaveProperty("votes");
+            expect(data.body.article.votes).toBe(0);
+            expect(data.body.article).toHaveProperty("article_img_url");//
+            expect(data.body.article.article_img_url).toBe("https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700");
+            expect(data.body.article).toHaveProperty("comment_count");
+            expect(data.body.article.comment_count).toBe(0);
+          });
+      });
+      test.only("201: POST /api/articles/  add a new article with propierty passing value to article_img_url", () => {
+        return request(app)
+          .post("/api/articles")
+          .send({author : "rogersop", 
+            title : "La casa encantada",
+            body : "This is a test",   
+            article_img_url : "https://images.com",
+            topic : "cats"})
+          .expect(201)
+          .then((data) => {
+            expect(data.body.article).toHaveProperty("author");
+            expect(data.body.article.author).toBe("rogersop");
+            expect(data.body.article).toHaveProperty("title");
+            expect(data.body.article.title).toBe("La casa encantada");
+            expect(data.body.article).toHaveProperty("article_id");
+            expect(data.body.article).toHaveProperty("body");
+            expect(data.body.article.body).toBe("This is a test");
+            expect(data.body.article).toHaveProperty("topic");
+            expect(data.body.article.topic).toBe("cats");
+            expect(data.body.article).toHaveProperty("created_at");
+            expect(data.body.article).toHaveProperty("votes");
+            expect(data.body.article.votes).toBe(0);
+            expect(data.body.article).toHaveProperty("article_img_url");
+            expect(data.body.article.article_img_url).toBe("https://images.com");
+            expect(data.body.article).toHaveProperty("comment_count");
+            expect(data.body.article.comment_count).toBe(0);
+          });
+      });
+    })
     describe("PATCH", () => {
       test("200: PATCH /api/articles/:article_id  update article by the id provided in params inc/decr votes value", () => {
         return request(app)
