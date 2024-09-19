@@ -551,6 +551,20 @@ describe("Project Test Suite", () => {
           expect(body.msg).toBe("Bad request");
         });
     });
+    test.only("404: POST /api/articles/:article_id/comments return msg with bad request, when we pass a not existing article_id in the range", () => {
+      return request(app)
+        .post("/api/articles/344/comments")
+        .send({
+          username: "lurker",
+          body: "this comment is about the food article ",
+        })
+        .expect(404)
+        .then((response) => {
+          const { body } = response;
+
+          expect(body.msg).toBe("Bad request");
+        });
+    });
   })
     describe("DELETE", () => {
     test("204: DELETE /api/comments/:comment_id return code 204 delete succedd", () => {

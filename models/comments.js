@@ -54,13 +54,18 @@ const selectCommentsByCommentId = (id) => {
 const insertComment = (req) => {
   const {username, body} = req.body;
   const {article_id} = req.params;
-
+  console.log(queryInsertComment, username, body, article_id)
   return db
   .query(
     queryInsertComment , [username, body, 0, parseInt(article_id)]
   )
   .then(comment => {
+    
       return comment.rows[0];
+  })
+  .catch(err => {
+    console.log(err)
+    return err;
   })
 }
 
