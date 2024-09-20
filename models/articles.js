@@ -8,7 +8,7 @@ const validSortByValues = [
   "body",
   "topic",
   "created_at",
-  "article_img_url",
+  "comment_count",
 ];
 const validTopicValues = ["mitch", "cats", "paper", "coding","cooking","football"];
 
@@ -29,8 +29,14 @@ const selectAllArticles = (req) => {
   }
 
   if (validSortByValues.includes(sort_by)) {
-    query += ` GROUP BY articles.article_id 
-    ORDER BY articles.${sort_by} `;
+    query += ` GROUP BY articles.article_id` 
+    console.log(sort_by, 'comment_count')
+    if(sort_by === 'comment_count'){
+       query += ` ORDER BY ${sort_by} `;
+    }
+    else{
+     query += ` ORDER BY articles.${sort_by} `;
+    }
   } else {
     query += ` GROUP BY articles.article_id 
     ORDER BY articles.created_at `;
@@ -41,7 +47,6 @@ const selectAllArticles = (req) => {
   } else {
     query += ` DESC ;`;
   }
-
   return db
     .query(query)
     .then((articles) => {
