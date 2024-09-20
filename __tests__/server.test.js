@@ -166,6 +166,7 @@ describe("Project NC-NEWS Test Suite", () => {
           .get("/api/articles?sort_by=votes")
           .expect(200)
           .then((data) => {
+           // console.log(data.body.articles)
             expect(Array.isArray(data.body.articles)).toBe(true);
             expect(data.body.articles.length).toBe(13);
             expect(data.body.articles).toBeSortedBy("votes", {
@@ -303,28 +304,9 @@ describe("Project NC-NEWS Test Suite", () => {
           });
       });
 
-      test("200: GET /api/articles?topic= [mitch, paper, cat] return all articles when ommited o not in the valid range", () => {
-        return request(app)
-          .get("/api/articles?topic=maria")
-          .expect(200)
-          .then((data) => {
-            expect(Array.isArray(data.body.articles)).toBe(true);
-            expect(data.body.articles.length).toBe(13);
-            data.body.articles.forEach((article) => {
-              expect(article).toHaveProperty("author");
-              expect(article).toHaveProperty("title");
-              expect(article).toHaveProperty("article_id");
-              expect(article).not.toHaveProperty("body");
-              expect(article).toHaveProperty("topic");
-              expect(article).toHaveProperty("created_at");
-              expect(article).toHaveProperty("votes");
-              expect(article).toHaveProperty("article_img_url");
-              expect(article).toHaveProperty("comment_count");
-            });
-          });
-      });
+ 
 
-      test("404: GET /api/articles?topic= valid but not existing value return msg error not found", () => {
+      test("404: GET /api/articles?topic= wrong value return msg error not found", () => {
         return request(app)
           .get("/api/articles?topic=paper")
           .expect(404)

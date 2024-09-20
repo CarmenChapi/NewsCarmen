@@ -10,7 +10,7 @@ const validSortByValues = [
   "created_at",
   "comment_count",
 ];
-const validTopicValues = ["mitch", "cats", "paper", "coding","cooking","football"];
+
 
 const {
   querySelectArticles,
@@ -26,13 +26,13 @@ const selectAllArticles = (req) => {
 
   let query = querySelectArticles;
 
-  if (validTopicValues.includes(topic)) {
+  if (topic) {
     query += ` WHERE articles.topic like '${topic}' `;
   }
 
   if (validSortByValues.includes(sort_by)) {
     query += ` GROUP BY articles.article_id` 
-    console.log(sort_by, 'comment_count')
+ 
     if(sort_by === 'comment_count'){
        query += ` ORDER BY ${sort_by} `;
     }
