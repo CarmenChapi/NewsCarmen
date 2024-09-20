@@ -163,13 +163,13 @@ describe("Project Test Suite", () => {
       });
       test("200: GET /api/articles?sort_by=nameColumn return all articles under the query sort_by any valid column(created_at by default)", () => {
         return request(app)
-          .get("/api/articles?sort_by=votes")
+          .get("/api/articles?sort_by=comment_count")
           .expect(200)
           .then((data) => {
-           // console.log(data.body.articles)
+            console.log(data.body.articles)
             expect(Array.isArray(data.body.articles)).toBe(true);
             expect(data.body.articles.length).toBe(13);
-            expect(data.body.articles).toBeSortedBy("votes", {
+            expect(data.body.articles).toBeSortedBy("comment_count", {
               descending: true,
             });
             data.body.articles.forEach((article) => {
