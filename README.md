@@ -64,7 +64,7 @@ API for the purpose of accessing application data programmatically. To mimic the
 
 ## Run tests 
     npm test utils
-    npm test severs
+    npm test servers
 
 ## For set up the database you need:
     Create in the project dirv22.4.0ectory path 2 files called '.env.development' and '.env.test' and each must contain:
